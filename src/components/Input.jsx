@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import Output from "./Output";
+import Modal from "./Modal";
 
 const Input = () => {
   const inputEl = useRef(null);
@@ -8,16 +8,18 @@ const Input = () => {
   const [languages, setLanguages] = useState();
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const onSubmit = async (e) => {
     e.preventDefault();
+    setShowModal(false);
     const source = await axios.post(
       `https://libretranslate.de/detect?q=${inputEl.current.value}&api_key=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
     );
-    console.log(source.data[0].language);
     const result = await axios.post(
       `https://libretranslate.de/translate?q=${inputEl.current.value}&source=${source.data[0].language}&target=${targetEl.current.value}&api_key=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
     );
     setResult(result.data.translatedText);
+    setShowModal(true);
   };
   useEffect(() => {
     const pullLanguages = async () => {
@@ -66,7 +68,7 @@ const Input = () => {
           <span>Translate</span>
         </div>
       </div>
-      <Output result={result} />
+      <Modal result={result} showModal={showModal} />
     </div>
   );
 };
