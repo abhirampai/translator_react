@@ -12,13 +12,17 @@ const Input = () => {
   const onSubmit = async (e) => {
     e.preventDefault();
     setShowModal(false);
-    const source = await axios.post(
-      `https://libretranslate.de/detect?q=${inputEl.current.value}&api_key=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
-    );
-    const result = await axios.post(
-      `https://libretranslate.de/translate?q=${inputEl.current.value}&source=${source.data[0].language}&target=${targetEl.current.value}&api_key=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
-    );
-    setResult(result.data.translatedText);
+    try {
+      const source = await axios.post(
+        `https://libretranslate.de/detect?q=${inputEl.current.value}&api_key=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+      );
+      const result = await axios.post(
+        `https://libretranslate.de/translate?q=${inputEl.current.value}&source=${source.data[0].language}&target=${targetEl.current.value}&api_key=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+      );
+      setResult(result.data.translatedText);
+    } catch (error) {
+      setResult(error.message);
+    }
     setShowModal(true);
   };
   useEffect(() => {
